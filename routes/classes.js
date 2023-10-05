@@ -122,6 +122,7 @@ router.post("/classes", async function (req, res)
 
             // return 422 status code
             res.status(422).json({"error": "class code should be less than 10 characters"});
+            return;
         }
 
         let createdClass = {
@@ -199,7 +200,7 @@ router.put("/classes/:id", async function (req, res){
             return;
         }
 
-        classToUpdate = await db.getClassWithId(id);
+        let classToUpdate = await db.getClassWithId(id);
         console.log({classToUpdate}); // this will pretty print the class object
 
         if (classToUpdate == null)
@@ -262,7 +263,7 @@ router.patch("/classes/:id", async function (req, res){
         // for a PATCH request
 
 
-        classToUpdate = await db.getClassWithId(id);
+        let classToUpdate = await db.getClassWithId(id);
         console.log({classToUpdate});
 
         if (classToUpdate == null)

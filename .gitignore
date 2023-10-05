@@ -16,6 +16,9 @@
 # Dependency directories
 node_modules/
 
+# Coverage reports
+coverage/
+
 # Logs
 logs
 *.log
