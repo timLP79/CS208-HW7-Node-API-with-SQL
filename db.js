@@ -558,8 +558,8 @@ function addStudentToClass(studentId, classId)
     {
         db.serialize(function()
         {
-            const sql =
-                `TODO: replace me with actual query`;
+            const sql = `INSERT INTO registered_students (student_id, class_id) VALUES (?, ?);`;
+
 
             function callbackAfterReturnedRowIsProcessed(err, row)
             {
