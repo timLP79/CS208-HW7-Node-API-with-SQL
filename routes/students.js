@@ -238,7 +238,32 @@ router.patch("/students/:id", async function (req, res)
  */
 router.delete("/students/:id", async function (req, res)
 {
-    // TODO: implement this route
+    try
+    {
+        const id = req.params.id;
+        console.log("id = " + id);
+
+        const studentToDelete = await db.getStudentWithId(id);
+        console.log({studentToDelete});
+
+        if (studentToDelete == null)
+        {
+            console.log("No student with id " + id + " exists.");
+
+            // return 404 status code (i.e., error that the student was not found)
+            res.status(404).json({"error": "failed to delete the student with id = " + id + " from the database because it does not exist"});
+            return;
+        }
+
+        await db.deleteExistingStudent(id);
+
+        res.status(204).send(); //there is no return value
+    }
+    catch (err)
+    {
+        console.error("Error:", err.message);
+        res.status(422).json({"error": "failed to delete the student with id = " + req.params.id + " from the database"});
+    }
 });
 
 

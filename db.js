@@ -469,8 +469,7 @@ function deleteExistingStudent(id)
     {
         db.serialize(function()
         {
-            const sql =
-                `TODO: replace me with actual query`;
+            const sql = `DELETE FROM students WHERE id = ?;`;
 
             function callbackAfterReturnedRowIsProcessed(err, row)
             {
