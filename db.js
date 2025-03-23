@@ -505,8 +505,11 @@ function getAllRegisteredStudents()
     {
         db.serialize(function()
         {
-            const sql =
-                `TODO: replace me with actual query`;
+            const sql = "SELECT students.id, students.first_name || ' ' || students.last_name AS student_full_name, classes.code, classes.title\n" +
+                "FROM students\n" +
+                "INNER JOIN registered_students ON students.id = registered_students.student_id\n" +
+                "INNER JOIN classes ON classes.id = registered_students.class_id\n" +
+                "ORDER BY students.last_name, students.first_name, classes.code;";
 
             let listOfRegisteredStudentJoinResults = [];
 
