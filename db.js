@@ -433,8 +433,7 @@ function updateExistingStudentInformation(studentToUpdate)
     {
         db.serialize(function()
         {
-            const sql =
-                `TODO: replace me with actual query`;
+            const sql = `UPDATE students SET first_name = ?, last_name = ?, birth_date = ? WHERE id = ?;`;
 
             function callbackAfterReturnedRowIsProcessed(err, row)
             {
