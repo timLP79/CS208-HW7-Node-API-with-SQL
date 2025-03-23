@@ -88,7 +88,40 @@ router.post("/add_student_to_class", async function (req, res)
  */
 router.delete("/drop_student_from_class", async function (req, res)
 {
-    // TODO: implement this route
+    try
+    {
+        const studentId = req.body.studentId;
+        const classId = req.body.classId;
+
+        console.log("studentId = " + studentId);
+        console.log("classId = " + classId);
+
+        const student = await db.getStudentWithId(studentId);
+        if (student == null)
+        {
+            console.log("No student with id " + studentId + " exists.");
+            res.status(404).json({"error": "student with id " + studentId + " not found"});
+            return;
+        }
+
+        const classObj = await db.getClassWithId(classId);
+        if (classObj == null)
+        {
+            console.log("No class with id " + classId + " exists.");
+            res.status(404).json({"error": "class with id " + classId + " not found"});
+            return;
+        }
+
+        const result = await db.dropAnExistingStudentFromAClass(studentId, classId);
+        console.log({result});
+
+        res.send(result);
+    }
+    catch (err)
+    {
+        console.error("Error:", err.message);
+        res.status(500).json({"error": "Internal Server Error"});
+    }
 });
 
 

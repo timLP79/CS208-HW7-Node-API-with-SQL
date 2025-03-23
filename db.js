@@ -595,8 +595,7 @@ function dropAnExistingStudentFromAClass(studentId, classId)
     {
         db.serialize(function()
         {
-            const sql =
-                `TODO: replace me with actual query`;
+            const sql = `DELETE FROM registered_students WHERE student_id = ? AND class_id = ?;`;
 
             function callbackAfterReturnedRowIsProcessed(err, row)
             {
