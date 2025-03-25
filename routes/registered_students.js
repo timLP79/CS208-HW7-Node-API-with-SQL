@@ -49,7 +49,7 @@ router.post("/add_student_to_class", async function (req, res)
         if (student == null)
         {
             console.log("No student with id " + studentId + " exists.");
-            res.status(404).json({"error": "student with id " + studentId + " not found"});
+            res.status(400).json({"error": "student with id " + studentId + " not found"});
             return;
         }
 
@@ -64,7 +64,8 @@ router.post("/add_student_to_class", async function (req, res)
         const result = await db.addStudentToClass(studentId, classId);
         console.log({result});
 
-        res.send(result);
+        //res.send(result);
+        res.status(201).json(result);
     }
     catch (err)
     {

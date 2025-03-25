@@ -106,6 +106,15 @@ router.post("/students", async function (req, res)
         }
 
         // we can perform additional validation on the parameters, for example:
+        if (firstName.length > 30)
+        {
+            console.log("Detected a first name length greater than 30 characters. Throwing an error...");
+
+            // return 422 status code
+            res.status(422).json({"error": "first name should be less than 30 characters"});
+            return;
+        }
+
         if (birthDate.length > 10)
         {
             console.log("Detected a birth date length greater than 10 characters. Throwing an error...");
@@ -265,6 +274,5 @@ router.delete("/students/:id", async function (req, res)
         res.status(422).json({"error": "failed to delete the student with id = " + req.params.id + " from the database"});
     }
 });
-
 
 module.exports = router;
