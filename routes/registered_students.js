@@ -101,7 +101,7 @@ router.delete("/drop_student_from_class", async function (req, res)
         if (student == null)
         {
             console.log("No student with id " + studentId + " exists.");
-            res.status(404).json({"error": "student with id " + studentId + " not found"});
+            res.status(400).json({"error": "student with id " + studentId + " not found"});
             return;
         }
 
@@ -109,7 +109,7 @@ router.delete("/drop_student_from_class", async function (req, res)
         if (classObj == null)
         {
             console.log("No class with id " + classId + " exists.");
-            res.status(404).json({"error": "class with id " + classId + " not found"});
+            res.status(400).json({"error": "class with id " + classId + " not found"});
             return;
         }
 
@@ -125,7 +125,6 @@ router.delete("/drop_student_from_class", async function (req, res)
     }
 });
 
-
 /**
  * GET /students_taking_class/{classCode}
  *
@@ -133,8 +132,20 @@ router.delete("/drop_student_from_class", async function (req, res)
  * registered_students, students and classes tables in the database) as JSON
  * that are taking the class {classCode}
  */
-// TODO: implement this route
+router.get("/students_taking_class/:classCode", async function (req, res) {
+    try {
+        const classCode = req.params.classCode;
+        console.log("classCode = " + classCode);
 
+        const studentsTakingClass = await db.getAllStudentsThatAreTakingAClass(classCode);
+        console.log({studentsTakingClass});
+
+        res.send(studentsTakingClass);
+    } catch (err) {
+        console.error("Error:", err.message);
+        res.status(500).json({"error": "Internal Server Error"});
+    }
+});
 
 /**
  * GET /classes_in_which_student_is_enrolled/{studentId}
@@ -145,7 +156,25 @@ router.delete("/drop_student_from_class", async function (req, res)
  *
  * @throws a 404 status code if the student with id = {studentId} does not exist
  */
-// TODO: implement this route
+router.get("/classes_in_which_student_is_enrolled/:studentID", async function (req, res) {
+    try {
+        const studentId = req.params.studentID;
+        console.log("studentId = " + studentId);
 
+        const student = await db.getStudentWithId(studentId);
+        if (student == null) {
+            console.log("No student with id " + studentId + " exists.");
+            res.status(400).json({"error": "student with id " + studentId + " not found"});
+            return;
+        }
 
+        const classesInWhichStudentIsEnrolled = await db.showAllClassesInWhichAStudentIsEnrolled(studentId);
+        console.log({classesInWhichStudentIsEnrolled});
+
+        res.send(classesInWhichStudentIsEnrolled);
+    } catch (err) {
+        console.error("Error:", err.message);
+        res.status(500).json({"error": "Internal Server Error"});
+    }
+})
 module.exports = router;

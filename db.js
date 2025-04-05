@@ -627,13 +627,102 @@ function dropAnExistingStudentFromAClass(studentId, classId)
 
 function getAllStudentsThatAreTakingAClass(classCode)
 {
-    // TODO: implement this function
+    return new Promise(function(resolve, reject)
+    {
+        db.serialize(function()
+        {
+            const sql = `SELECT students.id, students.first_name || ' ' || students.last_name AS student_full_name
+                         FROM students
+                         INNER JOIN registered_students ON students.id = registered_students.student_id
+                         INNER JOIN classes ON classes.id = registered_students.class_id
+                         WHERE classes.code = ?
+                         ORDER BY students.last_name, students.first_name;`;
+
+            let listOfStudentsTakingAClass = [];
+
+            printTableHeader(["students.id", "student_full_name"]);
+
+            const callbackEachRowProcessing = function(err, row)
+            {
+                if (err)
+                {
+                    reject(err);
+                }
+
+                // extract the values from the current row
+                const studentId = row.id;
+                const studentFullName = row.student_full_name;
+
+                // print the results of the current row
+                console.log(util.format("| %d | %s |", studentId, studentFullName));
+
+                const studentForCurrentRow = {
+                    studentId: studentId,
+                    studentFullName: studentFullName
+                };
+
+                listOfStudentsTakingAClass.push(studentForCurrentRow);
+            };
+
+            const callbackAfterAllRowsProcessed = function()
+            {
+                resolve(listOfStudentsTakingAClass);
+            };
+
+            db.each(sql, [classCode], callbackEachRowProcessing, callbackAfterAllRowsProcessed);
+        });
+    });
 }
 
 
 function showAllClassesInWhichAStudentIsEnrolled(studentId)
 {
-    // TODO: implement this function
+    return new Promise(function(resolve, reject)
+    {
+        db.serialize(function()
+        {
+            const sql = `SELECT classes.id, classes.code, classes.title
+                         FROM classes
+                         INNER JOIN registered_students ON classes.id = registered_students.class_id
+                         WHERE registered_students.student_id = ?
+                         ORDER BY classes.code;`;
+
+            let listOfClassesInWhichAStudentIsEnrolled = [];
+
+            printTableHeader(["classes.id", "classes.code", "classes.title"]);
+
+            const callbackEachRowProcessing = function(err, row)
+            {
+                if (err)
+                {
+                    reject(err);
+                }
+
+                // extract the values from the current row
+                const classId = row.id;
+                const classCode = row.code;
+                const classTitle = row.title;
+
+                // print the results of the current row
+                console.log(util.format("| %d | %s | %s |", classId, classCode, classTitle));
+
+                const classForCurrentRow = {
+                    classId: classId,
+                    classCode: classCode,
+                    classTitle: classTitle
+                };
+
+                listOfClassesInWhichAStudentIsEnrolled.push(classForCurrentRow);
+            };
+
+            const callbackAfterAllRowsProcessed = function()
+            {
+                resolve(listOfClassesInWhichAStudentIsEnrolled);
+            };
+
+            db.each(sql, [studentId], callbackEachRowProcessing, callbackAfterAllRowsProcessed);
+        });
+    });
 }
 
 function printTableHeader(listOfColumnNames)
